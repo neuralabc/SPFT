@@ -44,8 +44,8 @@
 % ========================================================================
 
 %addpath('/home/raid1/steele/Documents/Projects/Working/7T/SPFT/scripts');
-addpath('/afs/cbs.mpg.de/projects/neu009_sequencing-plasticity/scripts/bx/');
-dataDir_root='/afs/cbs.mpg.de/projects/neu009_sequencing-plasticity/probands/' %specify the root location for bx data, actual subdir will differ depending on the ID
+addpath('/afs/cbs.mpg.de/projects/nro160_doping/scripts');
+dataDir_root='/afs/cbs.mpg.de/nro160/probands/' %specify the root location for bx data, actual subdir will differ depending on the ID
 
 SHOWPLOTS=false;
 
@@ -77,17 +77,17 @@ SPFT_d0.fileNameTail='-SPFT_7T_localize_newForce.log';
 clear temp;
 
 
-% all_files=dir(strcat(dataDir,'/*','d*','-SPFT_7T_Daily*log'));
-% all_files
-% %construct the IDs variable (1st 7 chars of the filename to include the d? designation)
-% for count=1:length(all_files)
-%     IDs{count}=all_files(count).name(1:7);
+all_files=dir(strcat(dataDir,'/*','d*','-SPFT_7T_Daily*log'));
+ all_files
+ %construct the IDs variable (1st 7 chars of the filename to include the d? designation)
+ for count=1:length(all_files)
+     IDs{count}=all_files(count).name(1:7);
 %     % remove the NA values from the files so that you can process them
-% end
+ end
 % SPFT_d0.IDs=IDs;
 
 subjectDirs={'KP8T','OL1T','GAIT','LM8T','BI3T','WSFT','KSYT','MART','HCBT','JMCT','KPFT','HR8T','NMFT','FA2T','SCZT','PMIT','SJ6X','BP4T'}; %XXX THIS WILL CHANGE TO PID ONLY, will be able to get rid of it then! :-)
-IDs={'P02','P03','P04','P05','P06','P07','P08','P09','P10','P11','P12','P13','P14','P15','P16','P17','P18','P20'};
+IDs={'P02','P03','P04','P05','P06','P07','P08','P09','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21','P22','P23','P24','P25','P26','P27'};
 
 SPFT_d0.IDs=IDs;
 SPFT_d0.subjectDirs=subjectDirs;

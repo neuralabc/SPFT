@@ -47,8 +47,8 @@
 % ========================================================================
 
 %addpath('/home/raid1/steele/Documents/Projects/Working/7T/SPFT/scripts');
-addpath('/nobackup/litauen2/steele/Projects/Working/SPFT_HELPING/scripts/');
-dataDir_root='/nobackup/litauen2/steele/Projects/Working/SPFT_HELPING/source/bx/' %specify the root location for bx data, actual subdir will differ depending on the ID
+addpath('/afs/cbs/projects/nro160_doping/scripts/');
+dataDir_root='/afs/cbs/projects/nro160_doping/probands/' %specify the root location for bx data, actual subdir will differ depending on the ID
 
 SHOWPLOTS=false;
 
@@ -87,14 +87,14 @@ clear temp;
 %       % remove the NA values from the files so that you can process them
 % end
 
-%subjectDirs=    {'P01','P02','P03','P04','P05','P06','P07','P08','P09','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21','P22','P23','P24','P25','P26','P27','P28','P29','P30','P32','P31','P33','P34','P35','P36','P37','P38','P39','P40','P41','P42','P43','P44'} %subdirectory
+subjectDirs=    {'P01','P02','P03','P04','P05','P06','P07','P08','P09','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21','P22','P23','P24','P25','P26','P27','P28','P29','P30','P32','P31','P33','P34','P35','P36','P37','P38','P39','P40','P41','P42','P43','P44'} %subdirectory
 %below are the PID to group ID mapping that was provided in a spreadsheet -
 %the PIDs should match up, since there is no intelligence later on.
-%SPFT.PID_for_grpID = {'P01','P02','P03','P04','P05','P06','P07','P08','P09','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21','P22','P23','P24','P25','P26','P27','P28','P29','P30','P31','P32','P33','P34','P35','P36','P37','P38','P39','P40','P41','P42','P43','P44'};
-%SPFT.grpID=[0,0,1,0,1,1,1,0,1,1,1,1,1,0,0,0,1,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,1,1,0,1,1,1,0,0,1];
+SPFT.PID_for_grpID = {'P01','P02','P03','P04','P05','P06','P07','P08','P09','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21','P22','P23','P24','P25','P26','P27','P28','P29','P30','P31','P32','P33','P34','P35','P36','P37','P38','P39','P40','P41','P42','P43','P44'};
+SPFT.grpID=[0,0,1,0,1,1,1,0,1,1,1,1,1,0,0,0,1,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,1,1,0,1,1,1,0,0,1];
 
 %subjectDirs={'P43', 'P44'} %subdirectory
-IDs={'BTI013', 'ZLU009_NRO174'};
+IDs=subjectDirs;
 %IDs={'P01','P02','P03','P04','P05','P06','P07','P08','P09','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19'}; % participant ID on .log file
 %####################################################################################################################################################################
 % P01 has a maxwert 8_bit of 99, which gets scrubbed from the data - this 
@@ -109,7 +109,7 @@ IDs={'BTI013', 'ZLU009_NRO174'};
 %subjectDirs = IDs;
 
 SPFT.IDs=IDs;
-%SPFT.subjectDirs=subjectDirs;
+SPFT.subjectDirs=subjectDirs;
 SPFT.numDays=2 % enter number of days!!!
 
 %loop over subjects
@@ -121,7 +121,7 @@ for ID=1:length(IDs)
     %loop over days
     for day=1:SPFT.numDays
 %        temp.fname=strcat(SPFT.dataDir,subjectDirs{ID},'/',IDs{ID},SPFT.fileNameTail); %figure out what the trial name should be
-        temp.fname=strcat(SPFT.dataDir,'/',IDs{ID},'_D',num2str(day+4),SPFT.fileNameTail); %figure out what the trial name should be
+        temp.fname=strcat(SPFT.dataDir,subjectDirs{ID},'/','SPFT_d',num2str(day),'/',IDs{ID},'_d',num2str(day),SPFT.fileNameTail); %figure out what the trial name should be
         %temp.fname=strcat(dataDir,IDs{ID},SPFT.fileNameTail); %figure out what the trial name should be
         fprintf('%s\n',temp.fname);
         temp.day=day;
@@ -411,10 +411,10 @@ fprintf('--- Loading and parsing into trials is DONE DONE DONE DONE DONE DONE! -
 
 %clear temp;
 %file is over 800mb!
-%%
+%
 % XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 % PROCESS / SCORE the data for all IDs/Days
-% creates SPFT.scoredData structure with all scored
+% creates SPFT.all structure with all scored
 % trial average data arranged by ID,day
 % XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -573,7 +573,7 @@ SPFT.scoredData=temp.out.all;
 
 %% plot individual subject data for specific measures
 % specify the individual (by ID) and day(s)  (by vector)
-ID=1;
+ID=09;
 days=[1;2]; %vector of days that I want to plot data for
 SCALEX=true; %scale xlimits according to input data
 
@@ -603,12 +603,12 @@ errorbar(nanmean(theDataSMP2),nanstd(theDataSMP2)./sqrt(length(IDs)),'go-','line
 
 plot([15 15], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
 
-plot([9.5 9.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
-plot([18.5 18.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
-plot([27.5 27.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
-plot([36.5 36.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
-plot([45.5 45.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
-plot([54.5 54.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
+%plot([9.5 9.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
+%plot([18.5 18.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
+%plot([27.5 27.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
+%plot([36.5 36.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
+%plot([45.5 45.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
+%plot([54.5 54.5], [min([nanmean(theDataLRN2), nanmean(theDataSMP2)]),max([nanmean(theDataLRN2), nanmean(theDataSMP2)])],'k:');
 title('Error over trials');
 xlabel('Trial');
 ylabel('Error (scaled absolute deviation)');
@@ -735,7 +735,7 @@ legend('Learning Task (LERNEN)','Simple Task (UEBEN)');
 
 linewidths=(SPFT.numTrials*SPFT.numBlocks:-1:1)/SPFT.numTrials*SPFT.numBlocks*.3;
 for ID=1:length(SPFT.IDs)
-    cmd=['rawForce=SPFT.',SPFT.IDs{ID},'.d1.out.SMP(:,4);']; %raw force
+    cmd=['rawForce=SPFT.',SPFT.IDs{ID},'.d6.out.SMP(:,4);']; %raw force
     eval(cmd);
     figure('name',[SPFT.IDs{ID} ' (SMP rawForce)']);
    for trial=1:SPFT.numTrials*SPFT.numBlocks
@@ -750,7 +750,7 @@ end
 %plot(resample(SPFT.SMP,SPFT.resampleFactor),'k--')
 
 for ID=1:length(SPFT.IDs)
-    cmd=['rawForce=SPFT.',SPFT.IDs{ID},'.d1.out.LRN(:,4);'];
+    cmd=['rawForce=SPFT.',SPFT.IDs{ID},'.d6.out.LRN(:,4);'];
     eval(cmd);
     figure('name',[SPFT.IDs{ID} ' (LRN rawForce)']);
   for trial=1:SPFT.numTrials*SPFT.numBlocks
@@ -765,3 +765,218 @@ end
 %plot(resample(SPFT.LRN,1,SPFT.resampleFactor),'k--')
 
 %%
+
+
+%% BELOW HERE IS OLD CODE FOR SINGLE DAY OF DATA
+
+%% DID NOT YET IMPLEMENT VEL ACC JRK
+% XXX OLD, does not work for new data structure with multiple days
+
+figure('name','Velocity');
+plotVal1=temp.out.all.velLRN;
+plotVal2=temp.out.all.velSMP;
+errorbar(nanmean(plotVal1),nanstd(plotVal1)./sqrt(length(IDs)),'bo-','linewidth',2);
+hold on
+plot(1:SPFT.numTrials*SPFT.numBlocks,ones(1,SPFT.numTrials*SPFT.numBlocks)*mean(abs(diff(resample(SPFT.LRN,1,SPFT.resampleFactor)))),'b--');
+errorbar(nanmean(plotVal2),nanstd(plotVal2)./sqrt(length(IDs)),'go-','linewidth',2);
+plot(1:SPFT.numTrials*SPFT.numBlocks,ones(1,SPFT.numTrials*SPFT.numBlocks)*mean(abs(diff(resample(SPFT.SMP,1,SPFT.resampleFactor)))),'g--');
+
+plotVal1=temp.out.all.accLRN;
+plotVal2=temp.out.all.accSMP;
+figure('name','Acceleration');
+errorbar(nanmean(plotVal1),nanstd(plotVal1)./sqrt(length(IDs)),'bo-','linewidth',2);
+hold on
+plot(1:SPFT.numTrials*SPFT.numBlocks,ones(1,SPFT.numTrials*SPFT.numBlocks)*mean(abs(diff(diff(resample(SPFT.LRN,1,SPFT.resampleFactor))))),'b--');
+errorbar(nanmean(plotVal2),nanstd(plotVal2)./sqrt(length(IDs)),'go-','linewidth',2);
+plot(1:SPFT.numTrials*SPFT.numBlocks,ones(1,SPFT.numTrials*SPFT.numBlocks)*mean(abs(diff(diff(resample(SPFT.SMP,1,SPFT.resampleFactor))))),'g--');
+
+plotVal1=temp.out.all.jrkLRN;
+plotVal2=temp.out.all.jrkSMP;
+figure('name','Jerk');
+errorbar(nanmean(plotVal1),nanstd(plotVal1)./sqrt(length(IDs)),'bo-','linewidth',2);
+hold on
+plot(1:SPFT.numTrials*SPFT.numBlocks,ones(1,SPFT.numTrials*SPFT.numBlocks)*mean(abs(diff(diff(diff(resample(SPFT.LRN,1,SPFT.resampleFactor)))))),'b--');
+errorbar(nanmean(plotVal2),nanstd(plotVal2)./sqrt(length(IDs)),'go-','linewidth',2);
+plot(1:SPFT.numTrials*SPFT.numBlocks,ones(1,SPFT.numTrials*SPFT.numBlocks)*mean(abs(diff(diff(diff(resample(SPFT.SMP,1,SPFT.resampleFactor)))))),'g--');
+%% Take a look at the relationship between the force that the subject provided and the error signal that was present at the time
+% XXX Sep 22, 2014, changed this to look at the positive and negative lag
+% negative = prediction
+% positive = actual lag
+
+fprintf('--- Extracting Error vs. Force data ---\n',IDs{ID});
+var1=zeros(21,24);
+var2=var1;
+maxLRN=var1;
+maxSMP=var1;
+
+fdbkCorrLRN=var1;
+fdbkCorrSMP=var1;
+
+corrLRN=zeros(21,24); %single lag point correlation
+corrSMP=var1;
+meancorrLRN=corrLRN;
+meancorrSMP=corrLRN;
+
+errorLRN=zeros(length(SPFT.IDs),SPFT.numTrials,SPFT.seqLength);
+errorSMP=errorLRN;
+
+%xcorr of error with itself
+xcorrerrorLRN=zeros(length(SPFT.IDs),SPFT.numTrials,2879);
+xcorrerrorSMP=xcorrerrorLRN;
+
+cut=80;%25; %cut off the first number of samples 1 = all, 2 = cut the 1st one... etc
+look_ahead_samples=80; %num samples to look forward in time for the maximum correlation, set to 0 for all (12.5ms per sample)
+num_samples=(SPFT.seqLength-cut)*2-1; %number of samples that will be in the output of the xcorr (only looking at -ve lag, i.e., prediction)
+
+if look_ahead_samples==0
+    xcLRN=zeros(length(SPFT.IDs),length(SPFT.numTrials),(num_samples+1)/2);
+else
+    xcLRN=zeros(length(SPFT.IDs),length(SPFT.numTrials),look_ahead_samples+1);
+end
+
+xcSMP=xcLRN;
+
+for ID=1:length(IDs)
+    fprintf('--- Processing %s ---\n',IDs{ID});
+    temp.out.errorLRN=[];
+    temp.out.errorSMP=[];
+    temp.out.forceLRN=[];
+    for trial=1:SPFT.numBlocks*SPFT.numTrials
+        %fprintf('Trial %i\n',trial);
+        try
+            %downsample the data to the same temporal resolution as the
+            %data that we are trying to match, then calculate our measures
+            %of interest
+            temp.LRNresp=resample(SPFT.fullData(ID).out.LRN{trial,1},SPFT.seqLength,length(SPFT.fullData(ID).out.LRN{trial,1}));
+            temp.SMPresp=resample(SPFT.fullData(ID).out.SMP{trial,1},SPFT.seqLength,length(SPFT.fullData(ID).out.SMP{trial,1}));
+            temp.out.errorLRN=[abs((temp.LRNresp-SPFT.LRN))'];
+            temp.out.forceLRN=[abs(diff(diff(temp.LRNresp)))'];
+            temp.out.errorSMP=[abs((temp.SMPresp-SPFT.SMP))'];
+            temp.out.forceSMP=[abs(diff(diff(temp.SMPresp)))'];
+            
+            [xc lags]=xcorr(temp.out.errorLRN(cut:end-2),temp.out.forceLRN(cut:end),'coeff');
+            xc_midpoint=(length(xc)+1)/2; %now we know what 1/2 way point is, this is the lag0 correlation point
+            if look_ahead_samples==0
+                [m lag_idx]=max(xc(xc_midpoint:end)); %only look within the # samples for max corr
+            else
+                [m lag_idx]=max(xc(xc_midpoint:xc_midpoint+look_ahead_samples)); %only look within the # samples for max corr
+            end
+            
+            lag=90/80*lags(xc_midpoint+lag_idx)/SPFT.seqLength*SPFT.seqDur*1000*-1;
+            fprintf('Max correlation at lag of LRN: %.2f ms \n',lag);
+            var1(ID,trial)=lag;
+            maxLRN(ID,trial)=m;
+            xcLRN(ID,trial,:)=xc(xc_midpoint:xc_midpoint+look_ahead_samples);
+            corrLRN(ID,trial)=xc(xc_midpoint+lag_idx);
+            meancorrLRN(ID,trial)=mean(abs(xc(xc_midpoint:end)));
+            errorLRN(ID,trial,:)=temp.out.errorLRN;
+            xcorrerrorLRN(ID,trial,:)=xcorr(temp.out.errorLRN,temp.out.errorLRN,'coeff');
+            tt=xc;
+            [xc lags]=xcorr(temp.out.errorSMP(cut:end-2),temp.out.forceSMP(cut:end),'coeff');
+            xc_midpoint=(length(xc)+1)/2; %now we know what 1/2 way point is, this is the lag0 correlation point
+            if look_ahead_samples==0
+                [m lag_idx]=max(xc(xc_midpoint:end)); %only look within the # samples for max corr
+            else
+                [m lag_idx]=max(xc(xc_midpoint:xc_midpoint+look_ahead_samples)); %only look within the # samples for max corr
+            end
+            
+            lag=90/80*lags(xc_midpoint+lag_idx)/SPFT.seqLength*SPFT.seqDur*1000*-1; %in ms
+            fprintf('Max correlation at lag of SMP: %.2f ms \n',lag);
+            var2(ID,trial)=lag;
+            maxSMP(ID,trial)=m;
+            xcSMP(ID,trial,:)=xc(xc_midpoint:xc_midpoint+look_ahead_samples);
+            corrSMP(ID,trial)=xc(xc_midpoint+lag_idx);
+            meancorrSMP(ID,trial)=mean(abs(xc(xc_midpoint:end)));
+            errorSMP(ID,trial,:)=temp.out.errorSMP;
+            xcorrerrorSMP(ID,trial,:)=xcorr(temp.out.errorSMP,temp.out.errorSMP,'coeff');
+            %corrLRN(ID,trial)=tt(xc_midpoint+lag_idx);
+            
+        catch
+            warning('%s trial %i was not scored properly\n',SPFT.IDs{ID},trial);
+        end
+    end
+end
+% figure;plot(var1','xb');
+% hold on; plot(var2','og');
+% ylabel('Lag (ms)');
+% xlabel('Trial');
+% title(['Lag with maximum correlation between error and response change (vel)\nWindow of ' num2str(samples) ,'considered']);
+% averageRT=mean(median([var1;var2]));
+% averageRTSamples=averageRT/1000/SPFT.seqDur*SPFT.seqLength*80/90*-1;
+% fprintf('Average of median RT to respond to error on SMP and LRN (given the window) in ms: %.2f \n Num samples offset (lag): %.2f\n',averageRT,averageRTSamples);
+
+figure('name','Mean lag correlations across subjects');
+subplot(2,2,1);
+imagesc(squeeze(mean(xcLRN,1)));
+c1=caxis; %get colour scale values
+title('LRN xcorr')
+ylabel('Trial (mean)');
+subplot(2,2,2);
+imagesc(squeeze(mean(xcSMP,1)));
+caxis(c1);
+title('SMP xcorr')
+subplot(2,2,3);
+imagesc(squeeze(std(xcLRN,1)));
+caxis(c1);
+ylabel('Trial (std)');
+subplot(2,2,4);
+imagesc(squeeze(std(xcSMP,1)));
+caxis(c1);
+xlabel('Sample number (relative to lag of 0)');
+colorbar;
+
+figure('name','Mean abs(error) across sequence');
+subplot(2,2,1);
+imagesc(squeeze(mean(abs(errorLRN),1)),[0,50]);
+hold on;
+plot(SPFT.LRN/10,'k--','linewidth',2);
+title('LRN')
+c1=caxis;
+subplot(2,2,2);
+imagesc(squeeze(mean(abs(errorSMP),1)));
+hold on;
+%plot(SPFT.SMP/10,'g--','linewidth',2);
+title('SMP')
+caxis(c1);
+subplot(2,2,3);
+plot(SPFT.LRN,'b','linewidth',2);
+subplot(2,2,4);
+plot(SPFT.SMP,'g','linewidth',2);
+caxis(c1);
+colorbar;
+
+figure('name','Xcorr of error with itself')
+subplot(2,2,1);
+imagesc(squeeze(mean(xcorrerrorLRN(:,:,1441:end),1)));
+hold on;
+plot(SPFT.LRN/10,'k--','linewidth',2);
+title('LRN')
+c1=caxis;
+subplot(2,2,2);
+imagesc(squeeze(mean(xcorrerrorSMP(:,:,1441:end),1)));
+hold on;
+plot(SPFT.SMP/10,'k--','linewidth',2);
+title('SMP')
+caxis(c1);
+subplot(2,2,3);
+caxis(c1);
+colorbar;
+
+% figure;
+% plot(xcLRN','b:'); hold on; plot(mean(xcLRN),'b-','linewidth',2);
+% plot((length(mean(xcLRN))-1)/2,0,'ro'); plot([(length(mean(xcLRN))-1)/2,(length(mean(xcLRN))-1)/2],[-.4,.4],'r','Linewidth',2);
+% xlabel('Sample')
+% ylabel('xcorr')
+% figure;
+%
+% plot(xcSMP','g:'); hold on; plot(mean(xcSMP),'g-','linewidth',2);
+% plot((length(mean(xcSMP))-1)/2,0,'ro');plot([(length(mean(xcSMP))-1)/2,(length(mean(xcSMP))-1)/2],[-.4,.4],'r','Linewidth',2);
+% xlabel('Sample')
+% ylabel('xcorr')
+
+figure('name','LRN - correlation change at max xcorr -lag');plot(corrLRN'); hold on; plot(mean(corrLRN),'ko-','Linewidth',3)
+figure('name','SMP - correlation change at max xcorr -lag');plot(corrSMP'); hold on; plot(mean(corrSMP),'ko-','Linewidth',3)
+xlabel('Trial');ylabel('Corr');
+%detrended
+%figure('name','detrended LRN - correlation change at max xcorr -lag');plot(detrend(corrLRN','constant')); hold on;plot(mean(detrend(corrLRN','constant'),2),'k','linewidth',3)
+%figure('name','detrended SMP - correlation change at max xcorr -lag');plot(detrend(corrSMP','constant')); hold on;plot(mean(detrend(corrSMP','constant'),2),'k','linewidth',3)
